@@ -1,0 +1,31 @@
+services:
+  scheduler:
+    build: ./kineteco/scheduler/.
+    ports:
+      - "81:80"
+    depends_on:
+      - database
+    #profiles:
+    #  - scheduling_service
+  storefront:
+    build: ./kineteco/storefront/.
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - database
+    #profiles:
+    #  - storefront_service
+  database:
+    image: "mysql:${TAG}"
+    env_file:
+      - ./kineteco/mysql/env_vars
+    volumes:
+      - ./kineteco/mysql:/docker-entrypoint-initdb.d:ro
+      - kineteco:/var/lib/mysql
+    #profiles:
+    #  - storefront_service
+    #  - scheduling_service
+
+volumes:
+  kineteco:
